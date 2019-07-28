@@ -93,7 +93,7 @@ function setup() {
   ui.push([btreset,btnsound,btnhelp,btninfo,btnrestart]);
  
   recalcpos();
-  
+  frameRate(10);
 }
 function draw() {
   background(0,128,0);

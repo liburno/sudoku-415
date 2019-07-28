@@ -24,15 +24,6 @@ class Solver {
       }
       return s;
     }
-    printcandidates() {
-      for (var r of this.grid) {
-        for (var c of r) {
-           if (c.v==0) {
-              console.log(c.i,c.j,c.can,c.v0);
-           }
-          }
-        }
-    }
     reset() {
       for (var r of this.grid) {
         for (var c of r) {
