@@ -1,12 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Test</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv=X-UA-Compatible content="IE=edge">
+  <meta name=viewport content="width=device-width,initial-scale=1">
+  <meta name=description content="Sudoku game by AGO">
+  <meta name=copyright content="ALK doo">
+  <meta name=author content="ago">
+  <meta name=version content=1.0.0>
+  <title>Sudoku</title>
+  <link rel=icon href="./img/icona.ico">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"></script>
+  <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body>
-    <h1>Test</h1>
+  <div id="canvas" />
+  <div id="container" class="hidden">
+    <div id="help" class="modalDialog">
+        <div>
+          <a href="#" title="Close" class="close">X</a>
+          <h2>Sudoku</h2>
+          <p>Il sudoku è un gioco di logica nel quale al giocatore o solutore viene proposta una griglia di 9×9 celle, ciascuna delle quali può contenere un numero da 1 a 9, oppure essere vuota</p>
+          <p>la griglia è suddivisa in 9 righe orizzontali, 9 colonne verticali e in 9 "sottogriglie" di 3×3 celle contigue. Queste sottogriglie sono delimitate da bordi in neretto e chiamate regioni.</p>
+          <p>Le griglie proposte al giocatore hanno da 20 a 35 celle contenenti un numero. Lo scopo del gioco è quello di riempire le caselle bianche con numeri da 1 a 9 in modo tale che in ogni riga, in ogni colonna e in ogni regione siano presenti tutte le cifre da 1 a 9, quindi senza ripetizioni.</p>
+          <p>In tal senso lo schema, una volta riempito correttamente, appare come un quadrato latino. </p>
+          <a href="https://en.wikipedia.org/wiki/Sudoku" target="_blank" >Wiki</a>
+          </p>
+        </div>
+     </div>
+  </div>
+  <script src="./js/functions.js"></script>
+  <script src="./js/buttons.js"></script>
+  <script src="./js/main.js"></script>
+  <script src="./js/game.js"></script>
+  <script src="./js/solver.js"></script>
 </body>
+
 </html>

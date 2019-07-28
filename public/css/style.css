@@ -1,0 +1,48 @@
+body {
+    overflow: hidden;
+    margin:0;
+    padding:0
+}
+
+.modalDialog {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 99999;
+    opacity:0;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    pointer-events: none;
+}
+
+.modalDialog:target {
+    opacity:1;
+    pointer-events: auto;
+}
+
+.modalDialog > div {
+    position: relative;
+    margin: 5% 5%;
+    font-family: 'sans';
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: #fff;
+}
+
+
+.close {
+    color:gray;
+    position: absolute;
+    font-family:  monospace;
+    font-weight: 900;
+    font-size:1.2em;
+    right: 10px;
+    text-align: center;
+    top: 15px;
+  
+}
+.close:hover { color: red; }
