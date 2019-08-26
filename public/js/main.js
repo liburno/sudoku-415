@@ -2,20 +2,14 @@ var w, ox, oy;
 var CW, CH;
 var sudoku;
 var nine;
-var ui, btreset, btnsound, btnhelp, btnrestart, btninfo, issound, clicksound;
+var ui, btreset, btnhelp, btnrestart, btninfo;
 var numbersel;
-var applause, tosse, solver, undosolver;
+var solver, undosolver;
 var xxlevel = 0;
 var ishelped = false;
 var dstart, dend;
 
 
-function preload() {
-  applause = loadSound('../songs/umgawa.mp3');
-  tosse = loadSound('../songs/tosse.mp3');
-  clicksound = loadSound("../songs/click.mp3");
-
-}
 function mouseClicked() {
   ui.mousepress(mouseX, mouseY);
 }
@@ -36,7 +30,6 @@ function keyPressed() {
 function recalcpos() {
   btreset.move(ox + w * 10.5, oy, w * 3)
   btnrestart.move(ox + w * 9.5, oy + w)
-  btnsound.move(ox + w * 10.5, oy + w)
   btnhelp.move(ox + w * 11.5, oy + w)
   btninfo.move(ox + w * 10.5, oy + w * 7.5, w * 3)
 
@@ -76,18 +69,11 @@ function setup() {
   btninfo = new Button("info", () => {
     window.location.hash = "#help"
   }, 0, 0);
-
-  issound = !(!getstorage("sound"))
-  btnsound = new Help(ox + w * 9.8, oy + w, () => {
-    issound = !issound;
-    btnsound.text = sounddes();
-    setstorage("sound", issound);
-  }, sounddes());
   btnhelp = new Help(ox + w * 11.2, oy + w, () => {
     ishelped = !ishelped
   }, "?");
 
-  ui.push([btreset, btnsound, btnhelp, btninfo, btnrestart]);
+  ui.push([btreset, btnhelp, btninfo, btnrestart]);
 
   recalcpos();
   frameRate(10);

@@ -6,7 +6,11 @@ class UI {
         this.obj = []
     }
     draw() {
-        this.obj.forEach(e => e.draw());
+
+        this.obj.forEach(e => 
+            
+            e.draw()
+        );
     }
     push(o) {
         if (Array.isArray(o)) {
@@ -18,8 +22,13 @@ class UI {
         }
     }
     mousemove(x, y) {
+    
         this.obj.forEach(e => {
-            e.hover = (e.enabled && e.callback && !e.pressed && e.isin(x, y));
+            if (e && e.isin)
+            e.hover = (e.enabled && 
+                       e.callback && 
+                       !e.pressed && 
+                       e.isin(x, y));
         })
     }
     recalcbuttsize(CW) {

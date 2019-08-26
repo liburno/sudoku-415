@@ -18,13 +18,6 @@ class Sudoku {
       this.helps.visible = false;
     }
   }
-  soundclick() {
-    if (issound) {
-      clicksound.amp(0.3);
-      clicksound.rate(2.5);
-      clicksound.play()
-    }
-  }
   reset() {
     this.id = this.time = this.errors = 0;
     this.finished = false;
@@ -256,7 +249,7 @@ class Sudoku {
         if (c.isin(x, y)) {
           c.selected = true;
           if (c.hidden == false) {
-            this.soundclick();
+            
             numbersel = c.value;
           } else {
             if (numbersel > 0) {
@@ -269,14 +262,8 @@ class Sudoku {
                 if (this.finished) {
                   setstorage("sudoku"); // reset local storage
                   c.selected = false;
-                  if (issound) applause.play();
-
-                } else {
-                  this.soundclick();
-                  //    this.toLocalStorage();
                 }
               } else {
-                if (issound) tosse.play();
                 this.errors++;
               }
             }
@@ -290,7 +277,6 @@ class Sudoku {
       if (this.helps[i].isin(x, y)) {
         numbersel = this.helps[i].value;
         this.helps[i].selected = true;
-        this.soundclick();
 
       } else {
         this.helps[i].selected = false;
