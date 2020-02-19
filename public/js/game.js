@@ -3,6 +3,7 @@ class Sudoku {
     this.time = 0;
     this.id = 0;
     this.errors = 0;
+    this.modeedit=false;
     nine = new Array(9);
     for (var i = 0; i < 9; i++) nine[i] = i + 1;
     this.grid = new Array(9);
@@ -189,6 +190,28 @@ class Sudoku {
       return true;
     }
   }
+
+  fromEdit(rr) {
+    for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 9; j++) {
+        var x1=this.grid[i][j];
+        var x2=rr.v[i][j];
+        x1.i = i;
+        x1.j = j;
+        x1.value = x2.v;
+        x1.hidden = !x2.init;
+        x1.initial = x2.init;
+      }
+    }
+    this.finished = false;
+    this.errors = 0;
+    solver = new Solver(sudoku);
+    solver.trysolve();
+    this.checkfinish();
+    this.toLocalStorage();
+    dstart = new Date();
+  }
+
 
   removeelements(n) {
     var remover = [];
@@ -415,7 +438,7 @@ class Cell {
     stroke(0);
     strokeWeight(1)
     textAlign(CENTER);
-    textFont('Sans');
+    textFont('Helvetica, Arial, Sans-Serif');
 
     if (this.value && !this.hidden) {
       fill(this.initial ? 180 : 0)

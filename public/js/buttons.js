@@ -100,7 +100,7 @@ class Help {
         if (this.hover) fill(255); else fill(this.color.r, this.color.g, this.color.b);
         circle(this.x, this.y, this.wx);
         textAlign(CENTER, BASELINE);
-        textFont('Sans')
+        textFont('Helvetica, Arial, Sans-Serif')
         textSize(this.wx * .7);
         noStroke()
         if (this.hover) fill(255, 0, 0); else fill(255)
@@ -140,11 +140,11 @@ class Button {
     draw() {
         if (this.isvisible && !this.isvisible()) return;
         if (this.visible) {
-            rectMode(CENTER);
-            textAlign(CENTER, BASELINE);
-            textFont('Sans')
-            textSize(this.textsize);
-            strokeWeight(1)
+            rectMode(CENTER)
+            .textAlign(CENTER, BASELINE)
+            .textFont('Helvetica, Arial, Sans-Serif')
+            .textSize(this.textsize)
+            .strokeWeight(1)
             var c;
             var r = this.wy / 2;//buttonround;
             if (!this.enabled) {
@@ -167,9 +167,9 @@ class Button {
                 r = 0;
                 c = ligthen(this.color, .2);
             }
-            fill(c.r, c.g, c.b);
-            rect(this.x, this.y, this.wx, this.wy, r);
-            fill(255);
+            fill(c.r, c.g, c.b)
+            .rect(this.x, this.y, this.wx, this.wy, r)
+            .fill(255);
 
             if (this.text) text(this.text, this.x, this.y + this.wy * 0.2);
         }

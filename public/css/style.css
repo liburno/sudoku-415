@@ -27,7 +27,7 @@ body {
 .modalDialog > div {
     position: relative;
     margin: 5% 5%;
-    font-family: 'sans';
+    font-family: 'Helvetica, Arial, Sans-Serif';
     padding: 10px 20px;
     border-radius: 10px;
     background: #fff;
