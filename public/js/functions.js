@@ -63,3 +63,39 @@ function ligthen(c, v) {
 	r.b = min(255, max(0, c.b + v * 255))
 	return r;
 }
+
+
+function post(url, data) {
+	return new Promise((resolve, reject) => {
+		if (!data) data = {};
+		fetch(url, {
+			method: "POST",
+			mode: "cors",
+			cache: "no-cache",
+			credentials: "same-origin",
+			headers: {
+				"Content-Type": "application/json; charset=utf-8",
+			},
+			redirect: "follow",
+			referrer: "no-referrer",
+			body: JSON.stringify(data),
+		})
+			.then(response => {
+				return response.json()
+			})
+			.then(d => {
+				if (d) {
+					if (d.err)
+						reject(d.err);
+					else
+						resolve(d.data);
+				} else {
+					reject('not a valid response')
+				}
+			})
+			.catch(e => {
+				reject(e.message)
+			})
+	});
+}
+

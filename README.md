@@ -1,3 +1,8 @@
+
+
+
+
+
 # sudoku
 
 [![](./public/img/sudoku.png?raw=true)](https://sudoku.liburno.com)
@@ -16,5 +21,10 @@ ho inserito anche un server node express, perchè volevo gestire alcuni servizi 
 
 rimosse le librerie sound in questa versione
 
+### aggiunte
 
+Ho inserito alcuni cambiamenti per salvare e editare gli schemi sul server. Il programma in questa versione è più complesso, ma nello 
+stesso tempo l'interfaccia è stata mantenuta semplice.
+
+È stato aggiunto anche il supporto della soluzione da tastiera, per compatibilità con l'editor che la richiede
 

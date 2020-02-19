@@ -2,33 +2,47 @@ var w, ox, oy;
 var CW, CH;
 var sudoku;
 var nine;
-var ui, btreset, btnhelp, btnrestart, btninfo, ui2, btnnoedit,btncand;
-var sedit;
+var ui, btreset, btnhelp, btnrestart, btninfo;
+var sedit, divblock, divsel, divinput, randid, baseid, countid;
 var numbersel;
 var modeedit = false;
 var solver, undosolver;
 var xxlevel = 0;
 var ishelped = false;
+
 var dstart, dend;
 
-
+function getnextid() {
+  baseid = getstorage("sudoku_baseid");
+  if (!baseid) {
+    baseid = Math.floor(Math.random() * 100000) + '';
+    setstorage("sudoku_baseid", baseid);
+  }
+  countid = getstorage("sudoku_countid")
+  countid = Number(countid)
+  if (!countid) {
+    countid = 1;
+  } else {
+    countid++;
+  }
+  setstorage("sudoku_countid", countid);
+  return `${baseid}_${countid}`;
+}
 
 function copyfromsudoku() {
-   var vv=[];
-   for (var i=0;i<9;i++) {
-     var v1=[];
-     for (var j=0;j<9;j++) {
-        if (sudoku.grid[i][j].initial) v1.push(sudoku.grid[i][j].value); else v1.push(0);
-     }
-     vv.push(v1);
-   }
-   sedit=new SSolver(vv);
+  var vv = [];
+  for (var i = 0; i < 9; i++) {
+    var v1 = [];
+    for (var j = 0; j < 9; j++) {
+      if (sudoku.grid[i][j].initial) v1.push(sudoku.grid[i][j].value); else v1.push(0);
+    }
+    vv.push(v1);
+  }
+  sedit = new SSolver(vv);
 }
 
 function mouseClicked() {
-  if (modeedit) {
-    ui2.mousepress(mouseX, mouseY)
-  } else {
+  if (!modeedit) {
     ui.mousepress(mouseX, mouseY);
   }
 }
@@ -43,58 +57,14 @@ function mousePressed() {
 
 function keyPressed() {
   if (modeedit) {
+    sedit.keypress(key)
 
-    switch (key) {
-      case "ArrowDown":
-        sedit.checkmode = false;
-        if (sedit.currow < 8) sedit.currow++; else sedit.currow = 0;
-        break;
-      case "ArrowUp":
-        sedit.checkmode = false;
-        if (sedit.currow > 0) sedit.currow--; else sedit.currow = 8;
-        break;
-      case "ArrowLeft":
-        sedit.checkmode = false;
-        if (sedit.curcol > 0) sedit.curcol--; else {
-          sedit.curcol = 8;
-          if (sedit.currow > 0) sedit.currow--; else sedit.currow = 8;
-        }
-        break;
-      case "ArrowRight":
-        sedit.checkmode = false;
-        if (sedit.curcol < 8) sedit.curcol++; else {
-          sedit.curcol = 0;
-          if (sedit.currow < 8) sedit.currow++; else sedit.currow = 0;
-        }
-        break;
-      case "0":
-      case "Space":
-      case " ":
-        var xx = sedit.v[sedit.curcol][sedit.currow]
-        xx.v = 0;
-        xx.init = false;
-        sedit.movenext();
-        break;
-      case "1":
-      case "2":
-      case "3":
-      case "4":
-      case "5":
-      case "6":
-      case "7":
-      case "8":
-      case "9":
-        var xx = sedit.v[sedit.curcol][sedit.currow]
-        xx.v = Number(key);
-        xx.init = true;
-        sedit.movenext();
-
-        break;
-      default:
-          console.log(key);
-          break;
-    }
   } else {
+    if (key == '?') {
+      ishelped = !ishelped
+
+    }
+    sudoku.keypress(key)
     ui.keypress(key);
   }
 }
@@ -102,21 +72,18 @@ function keyPressed() {
 
 function recalcpos() {
   btreset.move(ox + w * 10.5, oy, w * 3)
-  btncand.move(ox + w * 10.5, oy, w * 3)
- 
-  btnrestart.move(ox + w * 9.5, oy + w)
-  btnhelp.move(ox + w * 11.5, oy + w)
-  btnedit.move(ox + w * 10.5, oy + w * 7.4, w * 3)
-  btnnoedit.move(ox + w * 10.5, oy + w * 7.4, w * 3)
-  btninfo.move(ox + w * 10.5, oy + w * 8.2, w * 3)
 
+  btnrestart.move(ox + w * 9.5, oy + w * .9)
+  btnhelp.move(ox + w * 11.5, oy + w * .9)
+  btnedit.move(ox + w * 10.5, oy + w * 7.4, w * 3)
+  btninfo.move(ox + w * 10.5, oy + w * 8.2, w * 3)
+  divblock.position(ox + w * 9, oy).size(w * 3)
 }
 
 function windowResized() {
   checksize();
   resizeCanvas(CW, CH);
   ui.recalcbuttsize(CW)
-  ui2.recalcbuttsize(CW)
   recalcpos();
 }
 
@@ -133,14 +100,15 @@ function checksize() {
 function setup() {
   checksize();
   var can = createCanvas(CW, CH).parent("canvas");
+
+  createblockinterface();
   sedit = new SSolver('');
-  console.log(sedit);
   sudoku = new Sudoku();
   undosolver = [];
   if (!sudoku.fromLocalStorage()) sudoku.reset();
   ui = new UI();
-  ui2 = new UI();
   btreset = new Button("New", () => {
+
     sudoku.reset()
   });
   btnrestart = new Help(0, 0, () => {
@@ -151,25 +119,18 @@ function setup() {
   }, 0, 0);
 
   btnedit = new Button("Edit", () => {
-    copyfromsudoku();
-    modeedit = true;
-  }, 0, 0);
-  
-  btncand = new Button("Candidates", () => {
-    var s2=sedit.clone();
-    if (s2.trysolve()) {
-      sedit.getcandidates();
-    } else {
-      sedit=sedit.clone();
-    }
-  }, 0, 0);
+    post('/post/jListSchema', {}).then(d => {
+      fillList(d);
+      divinput.value(sudoku.curid);
 
-  btnnoedit = new Button("Save", () => {
-    var s2=sedit.clone();
-    if (s2.trysolve()) {
-      sudoku.fromEdit(s2);
-      modeedit = false;
-    }
+      divblock.show();
+      copyfromsudoku();
+
+      modeedit = true;
+    }).catch(e => {
+      alert(`error! ${e}`)
+    })
+
   }, 0, 0);
 
 
@@ -179,14 +140,12 @@ function setup() {
   }, "?");
 
   ui.push([btreset, btnhelp, btninfo, btnrestart, btnedit]);
-  ui2.push([btnnoedit,btncand]);
   recalcpos();
   frameRate(10);
 }
 function draw() {
   background(0, 128, 0);
   if (modeedit) {
-    ui2.draw();
     sedit.draw();
   } else {
     sudoku.draw();
@@ -194,3 +153,79 @@ function draw() {
   }
 }
 
+function fillList(d) {
+  divsel.html("");
+  for (var v of d)
+    divsel.option(v);
+
+}
+function createblockinterface() {
+  divblock = createDiv().parent("interface").hide();
+
+  createButton('candidates').parent(divblock).class("btn").mousePressed(() => {
+    var s2 = sedit.clone();
+    if (s2.trysolve()) {
+      sedit.getcandidates();
+    } else {
+      sedit = sedit.clone();
+    }
+
+  })
+  createDiv().parent(divblock).class('label').html("name:")
+
+
+  divinput = createInput().parent(divblock)
+  createDiv().parent(divblock).class('label').style("margin-top:2em;").html("load:")
+  divsel = createSelect().parent(divblock).html("");
+
+  createButton('delete').parent(divblock).class("btn").mousePressed(() => {
+    var id = divinput.value();
+    if (id) {
+      post('/post/jDeleteSchema', { id: id }).then(d => {
+        alert(`deleted: ${id}`);  
+        fillList(d);
+
+      })
+    }
+  })
+
+
+  createButton('save').parent(divblock).class("btn").style("margin-top:10em").mousePressed(() => {
+    var s2 = sedit.clone();
+    if (s2.trysolve()) {
+      var id = divinput.value();
+      if (id) {
+        post('/post/jSaveSchema', { data: sedit.toString(), id: id }).then(d => {
+          alert(`saved: ${id}`);  
+          fillList(d);
+        }).catch(e => {
+          alert(e);
+        })
+      }
+    }
+  })
+
+  createButton('exit').parent(divblock).class("btn").mousePressed(() => {
+    var s2 = sedit.clone();
+    if (s2.trysolve()) {
+      var id = divinput.value();
+      sudoku.fromEdit(id,s2);
+      divblock.hide();
+      modeedit = false;
+    }
+  })
+
+  divsel.changed(() => {
+    var id = divsel.value();
+    if (id) {
+      post('/post/jGetSchema', { id }).then(d => {
+        sedit = new SSolver(d)
+        divinput.value(id);
+      }).catch(e => {
+        alert(e);
+      })
+    }
+
+  })
+
+}

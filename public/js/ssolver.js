@@ -205,7 +205,58 @@ class SSolver {
             if (this.currow>8) this.currow=0;
         }
     }
-
+    keypress(key) {
+        switch (key) {
+            case "ArrowDown":
+              this.checkmode = false;
+              if (this.currow < 8) this.currow++; else this.currow = 0;
+              break;
+            case "ArrowUp":
+              this.checkmode = false;
+              if (this.currow > 0) this.currow--; else this.currow = 8;
+              break;
+            case "ArrowLeft":
+              this.checkmode = false;
+              if (this.curcol > 0) this.curcol--; else {
+                this.curcol = 8;
+                if (this.currow > 0) this.currow--; else this.currow = 8;
+              }
+              break;
+            case "ArrowRight":
+              this.checkmode = false;
+              if (this.curcol < 8) this.curcol++; else {
+                this.curcol = 0;
+                if (this.currow < 8) this.currow++; else this.currow = 0;
+              }
+              break;
+            case "0":
+            case "Space":
+            case " ":
+              var xx = this.v[this.curcol][this.currow]
+              xx.v = 0;
+              xx.init = false;
+              this.movenext();
+              break;
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+            case "5":
+            case "6":
+            case "7":
+            case "8":
+            case "9":
+              var xx = this.v[this.curcol][this.currow]
+              xx.v = Number(key);
+              xx.init = true;
+              this.movenext();
+      
+              break;
+            default:
+                console.log(key);
+                break;
+          }
+    }
 }
 
 

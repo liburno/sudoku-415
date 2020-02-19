@@ -1,7 +1,39 @@
 body {
     overflow: hidden;
     margin:0;
-    padding:0
+    padding:0;
+    font-family: "Arial";
+}
+.btn {
+	display: block;
+	padding: 5px;
+	border: 1px solid black;
+	margin: 5px 2%;
+	width: 95%;
+	font-size: 1rem;
+	border-radius: 10px;
+	color: white;
+	background: #666;
+	cursor: pointer;
+}
+
+.btn:hover {
+background: #444;   
+}
+
+input,select {
+    width: 90%;
+    padding: 2px;
+    margin: 0 2%;
+    font-size: 0.9rem;
+}
+select {
+    width: 95%;
+}
+.label {
+    font-size: 0.9rem;
+    color:white;
+    padding:3px;
 }
 
 .modalDialog {

@@ -3,7 +3,8 @@ class Sudoku {
     this.time = 0;
     this.id = 0;
     this.errors = 0;
-    this.modeedit=false;
+    this.currow=0;this.curcol=0;
+    
     nine = new Array(9);
     for (var i = 0; i < 9; i++) nine[i] = i + 1;
     this.grid = new Array(9);
@@ -19,7 +20,79 @@ class Sudoku {
       this.helps.visible = false;
     }
   }
+  movenext() {
+    this.curcol++;
+    if (this.curcol>8) {
+        this.curcol=0;
+        this.currow++;
+        if (this.currow>8) this.currow=0;
+    }
+  }
+  keypress(key) {
+    switch (key) {
+        case "ArrowDown":
+          if (this.currow < 8) this.currow++; else this.currow = 0;
+          break;
+        case "ArrowUp":
+          if (this.currow > 0) this.currow--; else this.currow = 8;
+          break;
+        case "ArrowLeft":
+          if (this.curcol > 0) this.curcol--; else {
+            this.curcol = 8;
+            if (this.currow > 0) this.currow--; else this.currow = 8;
+          }
+          break;
+        case "ArrowRight":
+          if (this.curcol < 8) this.curcol++; else {
+            this.curcol = 0;
+            if (this.currow < 8) this.currow++; else this.currow = 0;
+          }
+          break;
+        case "x":
+        case "X":
+           //this.modecand=!this.modecand;
+           break;
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+
+          var ns = Number(key);
+          
+          
+          
+          var c=this.grid[this.curcol][this.currow];
+          if (c.hidden) {
+            if (c.value == ns) {
+              numbersel=ns
+              c.hidden = false;
+              solver = new Solver(sudoku);
+              solver.trysolve();
+              this.checkfinish();
+              //solver.grid[c.i][c.j].piazza(solver,numbersel)
+              if (this.finished) {
+                setstorage("sudoku"); // reset local storage
+                c.selected = false;
+              }
+              this.movenext();
+            } else {
+              this.errors++;
+            }
+        
+          }
+          break;
+        default:
+            console.log(key);
+            break;
+      }
+  }
   reset() {
+    this.curid=null;
     this.id = this.time = this.errors = 0;
     this.finished = false;
     for (var i = 0; i < 9; i++) {
@@ -55,6 +128,7 @@ class Sudoku {
         c.initial = !c.hidden;
       }
     }
+    
     this.checkfinish(true);
     this.toLocalStorage();
     dstart = new Date();
@@ -144,8 +218,9 @@ class Sudoku {
         fl = true; break;
       }
     }
+    if (!this.curid) this.curid=getnextid();
     if (!fl) {
-      rx.unshift({ id: this.id, data: rr, comment: '', level: tot2 + '/' + tot1, time: this.time, errors: this.errors })
+      rx.unshift({ curid:this.curid,id: this.id, data: rr, comment: '', level: tot2 + '/' + tot1, time: this.time, errors: this.errors })
       if (rx.length > 50) rx.pop();
     }
     setstorage("sudoku_v", rx);
@@ -154,14 +229,26 @@ class Sudoku {
   fromLocalStorage(id) {
     var rx = getstorage("sudoku_v");
     if (!rx || rx.length < 1) return false
+    var fl=false;
+    for (var r of rx)  {
+       if (!r.curid) {
+          r.curid=getnextid();
+          fl=true;
+       }
+    }
+    if (fl) setstorage("sudoku_v",rx);
+
+    
     var rr;
     if (!id) {
       rr = rx[0].data;
       xxlevel = parseInt(rx[0].level.split('/')[0]);
       this.id = rx[0].id
+      this.curid = rx[0].curid
     } else {
       for (var r of rx) {
         if (r.id == id) {
+          this.curid = curid;
           this.id = id;
           xxlevel = parseInt(r.level.split('/')[0]);
           rr = r.data;
@@ -191,7 +278,8 @@ class Sudoku {
     }
   }
 
-  fromEdit(rr) {
+  fromEdit(curid,rr) {
+    this.curid=curid;
     for (var i = 0; i < 9; i++) {
       for (var j = 0; j < 9; j++) {
         var x1=this.grid[i][j];
@@ -270,6 +358,8 @@ class Sudoku {
     for (var r of this.grid) {
       for (var c of r) {
         if (c.isin(x, y)) {
+          this.currow=c.j;
+          this.curcol=c.i;
           c.selected = true;
           if (c.hidden == false) {
             
@@ -358,7 +448,7 @@ class Sudoku {
   draw() {
     for (var i = 0; i < 9; i++) {
       for (var j = 0; j < 9; j++) {
-        this.grid[i][j].draw();
+        this.grid[i][j].draw(j==this.currow && i==this.curcol);
       }
     }
     if (!this.finished)
@@ -368,14 +458,17 @@ class Sudoku {
 
     stroke(0);
     strokeWeight(1)
-    fill(255, 0, 0)
+    fill(0, 0, 255)
     textAlign(CENTER);
     text('Helvetica');
     textSize(w * .3);
     var tm = "L:" + xxlevel;
     var tm1 = sudoku.hiddens();
     if (tm1) tm = tm + " H:" + tm1;
-    text(tm, ox + w * 10.5, oy + w * 2);
+    text(tm, ox + w * 10.5, oy + w * 1.6);
+    fill(255, 0, 0)
+    
+    text(this.curid, ox + w * 10.5, oy + w * 2);
     if (!dend || !this.finished) {
       dend = new Date();
     }
@@ -420,21 +513,24 @@ class Cell {
     var w0 = this.i < 0 ? w * .8 : w;
     return (abs(x - pos.x) < w0 / 2 && abs(y - pos.y) < w0 / 2)
   }
-  draw() {
+  draw(selec) {
     var pos = this.pos();
     if (this.i < 0 && this.hidden) return;
     var w0 = this.i < 0 ? w * .8 : w;
     rectMode(CENTER);
     if (numbersel == this.value && !this.hidden) fill(255, 225, 0); else fill(255)
-    if (this.selected) {
+    if (selec) {
       stroke(255, 0, 0);
       strokeWeight(3)
       rect(pos.x, pos.y, w0 - 4, w0 - 4);
+  
     } else {
-      stroke(0);
-      strokeWeight(1)
-      rect(pos.x, pos.y, w0, w0);
+        stroke(0);
+        strokeWeight(1)
+        rect(pos.x, pos.y, w0, w0);
+     
     }
+    
     stroke(0);
     strokeWeight(1)
     textAlign(CENTER);
