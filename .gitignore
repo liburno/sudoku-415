@@ -1,5 +1,8 @@
 node_modules
 old
 pubblica
-
+*.txt
+*.json
 package-lock.json 
+service.rest
+data

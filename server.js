@@ -6,6 +6,7 @@ const app=express();
 const server = require('http').Server(app);
 const port=process.env.PORT || 3001;
 
+
 app.use('/',express.static('./public'));
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
